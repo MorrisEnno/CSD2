@@ -1,0 +1,3 @@
+
+The psychosis of the mass is rooted in the psychosis of the individual
+initial commit : added hello.txt file
