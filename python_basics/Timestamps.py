@@ -1,68 +1,93 @@
-import simpleaudio as sa
+import pygame
 import time
+pygame.init()
+hallo = pygame.mixer.Sound("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/Hi.Hat.wav")
+
+hallo.play()
+
 
 #User inputs
 bpm = 120
 try:
    print("BPM = 120")
    bpm = int(input("To which value do you want to change the BPM?: "))
+  
 except: 
    print("BPM Set to Default")
 else: 
    print(f"BPM set to {bpm}")   
     
 
+try:
+  numRepeats = int(input("How many times do you want to playback your rhythm?: "))
+except ValueError:
+  print("Invalid input. Setting numRepeats to 1.")
+  numRepeats = 1
 
-numRepeats = int(input("How many times do you want to playback your rhythm?: "))
 
-numNotes = int(input("How many notes should the rhythm contain?: "))
+try:
+   numNotes = int(input("How many notes should the rhythm contain?: "))
+except ValueError:
+   print("Invadlid input. Setting numNotes to 3.")
+   numNotes = 1
 
+quarternoteDuration = 60 / bpm
+
+
+#forLoop in list of noteDurations, userinput is asked for the notelength where 1 = quarternote.
 noteDurations = []
 for i in range(numNotes):
-    noteDuration = float(input(f"What should the note value be for note number {i + 1}?: "))
-    noteDurations.append(noteDuration)
+    try:
+        noteDuration = float(input(f"What should the note value be for note number {i + 1}?: "))
+        noteDurations.append(noteDuration)
+    except ValueError:
+        print(f"Invalid input for note {i + 1}. Setting note duration to 1.")
+        noteDurations.append(1.0)
 
 
-#Time calculations
-quarternoteDuration = 60 / bpm
+#forLoop in list of timeDurations converts the given noteDurations to timeDurations.
 timeDurations = []
 for noteDuration in noteDurations:
-   timeDurations.append(noteDuration * quarternoteDuration)
+     timeDurations.append(noteDuration * quarternoteDuration)
+     print("timeDurations", timeDurations)
 
-timeStamps = []
-totalDuration = 0
+#Function to create timeStamps
+def durationsToTimestamps16th(timeDurations):
+   timeStampSeq = []
+   sum = 0
+   for duration in timeDurations:
+         timeStampSeq.append(sum)
+         sum += duration
+   print(f"timeStamps: {timeStampSeq}")
+   return timeStampSeq
 
-for duration in timeDurations:
-    timeStamps.append(totalDuration)
-    totalDuration = totalDuration + duration
+   
+timeStampSeq = durationsToTimestamps16th(timeDurations)
+#ts = timeStamps.pop(0)
 
-print(timeStamps)
-
-ts = timeStamps.pop(0)
-
-startTime = time.time()
+#startTime = time.time()
 
 
 #playback
-neuroCapture = sa.WaveObject.from_wave_file("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/NC.Neuro.capture.wav")
-for _ in range(numRepeats): 
- while True:
-   tCurrent = time.time() - startTime
-
-   if tCurrent >= ts:
-      play_obj = neuroCapture.play()
-      if len(timeStamps) > 0:
-          ts = timeStamps.pop(0)
-      else:
-        break
-   time.sleep(0.001)   
+hiHat = pygame.mixer.Sound("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/Hi.Hat.wav")
 
 
-time.sleep(timeDurations[-1])    
+for _ in range(numRepeats):
+    timeZero = time.time()  # Reference start time
+    timeStamps = timeStampSeq.copy()  # Reset timestamp list for each repeat
 
-#for _ in range(numRepeats): 
-   #for tDur in timeDurations: 
-    # play_obj = neuroCapture.play()
-     #time.sleep(tDur)
- 
-#play_obj.wait_done()
+    while timeStamps:
+        now = time.time() - timeZero
+        ts = timeStamps[0]  # Get the first timestamp
+
+        # Check if it's time to play the sound
+        if now >= ts:
+            hiHat.play()
+            timeStamps.pop(0)  # Remove the played timestamp
+
+        time.sleep(0.001)  # Small sleep to prevent CPU overuse
+
+    # Wait for the final note to finish before moving to the next repeat
+    time.sleep(timeDurations[-1])
+
+# Exit the program
