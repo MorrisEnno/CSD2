@@ -34,7 +34,7 @@ try:
  noteDurationsInput = (input("Give a list of note values: "))
  noteDurations = [float(note.strip()) for note in noteDurationsInput.split(",")]   
   
- if len(noteDurations ==0):
+ if len(noteDurations) == 0:
     raise ValueError("Enter atleast one note value.")
 except ValueError:
     print("invalid input setting note durations to 1.")
@@ -53,7 +53,6 @@ def durationsToTimestamps16th(timeDurations):
    for duration in timeDurations:
          timeStampSeq.append(sum)
          sum += duration
- 
    return timeStampSeq
 
 #convert durations to timestamps
@@ -65,10 +64,13 @@ print(f"timeStamps: {timeStampSeq}")
 hiHat = pygame.mixer.Sound("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/Hi.Hat.wav")
 
 
-for _ in range(numRepeats):
+
+for repeat in range(numRepeats):
+    print(f"Playback repeat {repeat + 1}/{numRepeats}")
     timeZero = time.time()  # Reference start time
     timeStamps = timeStampSeq.copy()  # Reset timestamp list for each repeat
 
+    # Loop through each timestamp and play the sound
     while timeStamps:
         now = time.time() - timeZero
         ts = timeStamps[0]  # Get the first timestamp
@@ -80,8 +82,5 @@ for _ in range(numRepeats):
 
         time.sleep(0.001)  # Small sleep to prevent CPU overuse
 
-    # Wait for the final note to finish before moving to the next repeat
-    time.sleep(timeDurations[-1])
-
-# Exit the program
-exit()
+    # Wait for the final note to finish playing before moving to the next repeat
+    time.sleep(timeDurations[-1] + 0.1)  # Add a small buffer to ensure sound finishes
