@@ -25,31 +25,26 @@ except ValueError:
   numRepeats = 1
 
 
-try:
-   numNotes = int(input("How many notes should the rhythm contain?: "))
-except ValueError:
-   print("Invadlid input. Setting numNotes to 3.")
-   numNotes = 1
 
 quarternoteDuration = 60 / bpm
 
 
 #forLoop in list of noteDurations, userinput is asked for the notelength where 1 = quarternote.
-noteDurations = []
-for i in range(numNotes):
-    try:
-        noteDuration = float(input(f"What should the note value be for note number {i + 1}?: "))
-        noteDurations.append(noteDuration)
-    except ValueError:
-        print(f"Invalid input for note {i + 1}. Setting note duration to 1.")
-        noteDurations.append(1.0)
+try:
+ noteDurationsInput = (input("Give a list of note values: "))
+ noteDurations = [float(note.strip()) for note in noteDurationsInput.split(",")]   
+  
+ if len(noteDurations ==0):
+    raise ValueError("Enter atleast one note value.")
+except ValueError:
+    print("invalid input setting note durations to 1.")
+    noteDurations = [1.0]
+
+#forLoop converts the given noteDurations to timeDurations.
+timeDurations = [noteDuration * quarternoteDuration for noteDuration in noteDurations]   
+print("timeDurations", timeDurations)
 
 
-#forLoop in list of timeDurations converts the given noteDurations to timeDurations.
-timeDurations = []
-for noteDuration in noteDurations:
-     timeDurations.append(noteDuration * quarternoteDuration)
-     print("timeDurations", timeDurations)
 
 #Function to create timeStamps
 def durationsToTimestamps16th(timeDurations):
@@ -58,14 +53,12 @@ def durationsToTimestamps16th(timeDurations):
    for duration in timeDurations:
          timeStampSeq.append(sum)
          sum += duration
-   print(f"timeStamps: {timeStampSeq}")
+ 
    return timeStampSeq
 
-   
+#convert durations to timestamps
 timeStampSeq = durationsToTimestamps16th(timeDurations)
-#ts = timeStamps.pop(0)
-
-#startTime = time.time()
+print(f"timeStamps: {timeStampSeq}")
 
 
 #playback
@@ -91,3 +84,4 @@ for _ in range(numRepeats):
     time.sleep(timeDurations[-1])
 
 # Exit the program
+exit()
