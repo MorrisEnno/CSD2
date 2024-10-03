@@ -1,7 +1,7 @@
 import pygame
 import time
 pygame.init()
-hallo = pygame.mixer.Sound("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/Hi.Hat.wav")
+hallo = pygame.mixer.Sound("C:/Users/Morris/Desktop/AttractorSamples/CA.textureHit.wav")
 
 hallo.play()
 
@@ -61,7 +61,7 @@ print(f"timeStamps: {timeStampSeq}")
 
 
 #playback
-hiHat = pygame.mixer.Sound("C:/Users/Morris/Desktop/HKU/HKU_jaar2/CSD2/CSD2/Hi.Hat.wav")
+hiHat = pygame.mixer.Sound("C:/Users/Morris/Desktop/AttractorSamples/CA.textureHit.wav")
 
 
 
