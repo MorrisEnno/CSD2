@@ -32,8 +32,24 @@ print("Hallo!")
 
 
 #User inputs
-bpm = 172
-numRepeats = 1
+bpm = 120
+try:
+   print("BPM = 120")
+   bpm = int(input("To which value do you want to change the BPM?: "))
+  
+except: 
+   print("BPM Set to Default")
+else: 
+   print(f"BPM set to {bpm}")   
+    
+
+try:
+  numRepeats = int(input("How many times do you want to playback your rhythm?: "))
+except ValueError:
+  print("Invalid input. Setting numRepeats to 1.")
+  numRepeats = 1
+
+
 
 #Define note durs and offsets for different samples used
 KickNoteDurs = [2.5, 1.5, 2.5, 1.5]
@@ -121,23 +137,32 @@ def handleEvent(event):
    
 timeZero = time.time()
 
+for repeat in range(numRepeats):
+    print(f"Playback repeat {repeat + 1}/{numRepeats}")
+     
+      # Reinitialize the events list
+    events = kickEvents + snareEvents + hiHatEvents
+    events.sort(key=getTimestamp)
 
-while events:
-        now = time.time() - timeZero
-        ts = events[0]['timestamp']  # Get the first timestamp
+    timeZero = time.time()  # Reset timeZero for each repeat
+  
+    while events:
+            now = time.time() - timeZero
+            ts = events[0]['timestamp']  # Get the first timestamp
 
         # Check if it's time to play the sound
-        if now >= ts:
-            simultaneousEvents = []
+            if now >= ts:
+                simultaneousEvents = []
             
-            while events and events[0]['timestamp'] == ts:
-                simultaneousEvents.append(events.pop(0))
-            for event in simultaneousEvents:
-                     handleEvent(event)
+                while events and events[0]['timestamp'] == ts:
+                   simultaneousEvents.append(events.pop(0))
+                for event in simultaneousEvents:
+                       handleEvent(event)
 
-        else:
-         time.sleep(0.001)  # Small sleep to prevent CPU overuse
+            else:
+             time.sleep(0.001)  # Small sleep to prevent CPU overuse
 
     # Wait for the final note to finish playing before moving to the next repeat
-time.sleep(1) # Add a small buffer to ensure sound finishes
-   
+    time.sleep(0.1) # Add a small buffer to ensure sound finishes
+
+  
